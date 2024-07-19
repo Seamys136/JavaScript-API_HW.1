@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <title>Расписание занятий</title>
+    <style>
+        .full {
+            background-color: #f8d7da; 
+        }
+        .available {
+            background-color: #d4edda; 
+        }
+    </style>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Расписание занятий</h1>
+        <div class="row mt-4" id="classes-container"></div>
+    </div>
+
+    <script>
+     
+        const classesData = [
+            {
+                "name": "Йога",
+                "time": "10:00 - 11:00",
+                "maxParticipants": 10,
+                "currentParticipants": 5
+            },
+            {
+                "name": "Пилатес",
+                "time": "11:30 - 12:30",
+                "maxParticipants": 8,
+                "currentParticipants": 8
+            },
+            {
+                "name": "Аэробика",
+                "time": "13:00 - 14:00",
+                "maxParticipants": 15,
+                "currentParticipants": 10
+            }
+        ];
+
+       
+        function updateClasses() {
+            const container = document.getElementById("classes-container");
+            container.innerHTML = ''; 
+            classesData.forEach((item, index) => {
+                const classDiv = document.createElement("div");
+                classDiv.className = "col-md-4 mb-3";
+                classDiv.innerHTML = `
+                    <div class="card ${item.currentParticipants >= item.maxParticipants ? 'full' : 'available'}">
+                        <div class="card-body">
+                            <h5 class="card-title">${item.name}</h5>
+                            <p class="card-text">Время: ${item.time}</p>
+                            <p class="card-text">Максимум участников: ${item.maxParticipants}</p>
+                            <p class="card-text">Записанные участники: ${item.currentParticipants}</p>
+                            <button class="btn btn-primary" id="join-btn-${index}" ${item.currentParticipants >= item.maxParticipants ? 'disabled' : ''} onclick="joinClass(${index})">Записаться</button>
+                            <button class="btn btn-danger" id="leave-btn-${index}" ${item.currentParticipants === 0 ? 'disabled' : ''} onclick="leaveClass(${index})">Отменить запись</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(classDiv);
+            });
+        }
+
+   
+        function joinClass(index) {
+            if (classesData[index].currentParticipants < classesData[index].maxParticipants) {
+                classesData[index].currentParticipants++;
+                updateClasses();
+            }
+        }
+
+  
+        function leaveClass(index) {
+            if (classesData[index].currentParticipants > 0) {
+                classesData[index].currentParticipants--;
+                updateClasses();
+            }
+        }
+
+  
+        updateClasses();
+    </script>
+
+</body>
+</html>
